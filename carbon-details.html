@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Details - Synexis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Shared JS Requirements -->
+    <script type="module" src="common.js" defer></script>
+    <script type="module" src="carbon-details.js" defer></script>
+
+    <style>
+        .trivia-box {
+            background-color: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .trivia-box h4 {
+            margin-top: 0;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .trivia-box p {
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .equivalency-card {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .equivalency-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Synexis</div>
+        <nav>
+            <div class="nav-section-title">Overview</div>
+            <ul class="nav-links mb-4">
+                <li><a href="index.html" class="nav-item">📊 Dashboard</a></li>
+            </ul>
+
+            <div class="nav-section-title">Analytics</div>
+            <ul class="nav-links mb-4">
+                <li><a href="carbon-details.html" class="nav-item active">🍃 Carbon Details</a></li>
+                <li><a href="eco-grade-details.html" class="nav-item">🌍 Eco-Grade Details</a></li>
+                <li><a href="cost-result.html" class="nav-item">💰 Cost Calculator</a></li>
+                <li><a href="graphs.html" class="nav-item">📈 Graphical Analysis</a></li>
+            </ul>
+
+            <div class="nav-section-title">Settings & Security</div>
+            <ul class="nav-links">
+                <li><a href="tariff.html" class="nav-item">⚙️ Tariff Settings</a></li>
+                <li><a href="index.html#alerts" id="nav-energy-alerts" class="nav-item">🚨 Energy Alerts</a></li>
+                <li><a href="index.html#vacation-toggle" class="nav-item">🏖️ Vacation Mode</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar" style="justify-content: center; position: relative;">
+            <h1 class="project-title" style="margin: 0 auto;">Carbon Footprint Analysis</h1>
+            <div class="user-profile" style="position: absolute; right: 2rem;">
+                <span id="display-username">Home ID: ---</span>
+                <div class="avatar">U</div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <!-- Row 1: The Metrics -->
+            <div class="dashboard-row">
+                <div class="card card-carbon" style="text-align: center;">
+                    <div class="value-label" style="margin-bottom: 1rem;">CO₂ Emissions Today</div>
+                    <div class="value-display" style="font-size: 3rem; color: var(--success);"><span
+                            id="detail-co2-today">--</span> <span style="font-size: 1.5rem;">kg</span></div>
+                </div>
+                <div class="card card-carbon" style="text-align: center;">
+                    <div class="value-label" style="margin-bottom: 1rem;">CO₂ Emissions This Month</div>
+                    <div class="value-display" style="font-size: 3rem; color: var(--success);"><span
+                            id="detail-co2-month">--</span> <span style="font-size: 1.5rem;">kg</span></div>
+                </div>
+            </div>
+
+            <!-- Row 2: Equivalencies -->
+            <div class="dashboard-row">
+                <div class="card card-insight" style="flex: 2;">
+                    <h2 class="card-title">🌎 What does this footprint mean?</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Your generated emissions over the past
+                        month are equivalent to:</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="equivalency-card" id="eq-car">
+                            <div class="equivalency-icon">🚗</div>
+                            <div style="font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;"><span
+                                    id="val-car">--</span> km</div>
+                            <div style="font-size: 0.875rem; color: var(--text-muted);">Driven in a petrol car</div>
+                        </div>
+                        <div class="equivalency-card" style="border-left: 4px solid #2ecc71;" id="eq-tree">
+                            <div class="equivalency-icon">🌳</div>
+                            <div style="font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;"><span
+                                    id="val-tree">--</span> trees</div>
+                            <div style="font-size: 0.875rem; color: var(--text-muted);">Required to absorb offset</div>
+                        </div>
+                        <div class="equivalency-card" id="eq-phone">
+                            <div class="equivalency-icon">📱</div>
+                            <div style="font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;"><span
+                                    id="val-phone">--</span> charges</div>
+                            <div style="font-size: 0.875rem; color: var(--text-muted);">Average smartphone charges</div>
+                        </div>
+                    </div>
+
+                    <div id="solar-eq-message"
+                        style="display: none; padding: 2rem; background: rgba(34, 197, 94, 0.1); border-radius: 0.5rem; text-align: center; margin-top: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">☀️</div>
+                        <h3 style="color: var(--success); margin-top: 0;">100% Eco-Friendly</h3>
+                        <p style="color: var(--text-muted); margin: 0;">You are running completely on zero-emission
+                            solar energy. Outstanding job protecting our planet!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Trivia -->
+            <div class="dashboard-row">
+                <div class="card card-eco">
+                    <h2 class="card-title">📚 Environmental Facts</h2>
+                    <div id="trivia-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

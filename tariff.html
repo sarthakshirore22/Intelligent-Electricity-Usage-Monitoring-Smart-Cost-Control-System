@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tariff Settings - Synexis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .reference-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .reference-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Synexis</div>
+        <nav>
+            <div class="nav-section-title">Overview</div>
+            <ul class="nav-links mb-4">
+                <li><a href="index.html" class="nav-item">📊 Dashboard</a></li>
+            </ul>
+
+            <div class="nav-section-title">Analytics</div>
+            <ul class="nav-links mb-4">
+                <li><a href="carbon-details.html" class="nav-item">🍃 Carbon Details</a></li>
+                <li><a href="eco-grade-details.html" class="nav-item">🌍 Eco-Grade Details</a></li>
+                <li><a href="cost-result.html" class="nav-item">💰 Cost Calculator</a></li>
+                <li><a href="graphs.html" class="nav-item">📈 Graphical Analysis</a></li>
+            </ul>
+
+            <div class="nav-section-title">Settings & Security</div>
+            <ul class="nav-links">
+                <li><a href="tariff.html" class="nav-item active">⚙️ Tariff Settings</a></li>
+                <li><a href="index.html#alerts" id="nav-energy-alerts" class="nav-item">🚨 Energy Alerts</a></li>
+                <li><a href="index.html#vacation-toggle" class="nav-item">🏖️ Vacation Mode</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-content" style="justify-content: center; position: relative;">
+                <h1 class="project-title" style="margin: 0 auto;">Tariff Settings</h1>
+
+                <div class="topbar-actions" style="position: absolute; right: 0;">
+                    <div class="solar-mode-container"
+                        style="display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem;">
+                        <span style="font-weight: 600; color: var(--text-main);">Solar Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="solar-mode-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div id="connection-status" class="status-badge">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Connecting...</span>
+                    </div>
+
+                    <div class="user-profile" id="user-profile-btn">
+                        <div class="profile-icon">👤</div>
+                        <span class="profile-name" id="display-username">Guest</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+
+            <!-- Card 1: Form -->
+            <div class="card">
+                <h2 class="card-title">⚙️ Update Tariff</h2>
+
+                <div id="tariff-section">
+                    <div class="form-group">
+                        <label class="form-label">Electricity Rate (₹/kWh)</label>
+                        <input type="number" step="0.01" id="input-rate" class="form-control" placeholder="e.g. 5.33"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Fixed Monthly Charge (₹)</label>
+                        <input type="number" step="1" id="input-fixed" class="form-control" placeholder="e.g. 135"
+                            required>
+                    </div>
+                </div>
+                <button id="btn-save" class="btn btn-primary btn-block" style="margin-top: 2rem;">Save Settings</button>
+            </div>
+
+            <!-- Card 2: Reference Table -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title">📋 Reference Table</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                    Use your electricity bill to find your consumer slab, and accordingly fill the 'Update Tariff'
+                    details here.
+                </p>
+
+                <div style="overflow-x: auto;">
+                    <table class="reference-table" style="width: 100%; min-width: 600px;">
+                        <thead>
+                            <tr>
+                                <th>Consumption Slab</th>
+                                <th>Fixed Monthly Charge (₹)</th>
+                                <th>Electricity Rate (₹/kWh)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Category 1 -->
+                            <tr class="table-section-header">
+                                <td colspan="3"
+                                    style="font-weight: 700; background: var(--bg-dark); padding-top: 1rem;">Residential
+                                    (LT-I B)</td>
+                            </tr>
+                            <tr>
+                                <td>0 - 100 Units</td>
+                                <td>₹130 / month</td>
+                                <td>₹4.28 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>101 - 300 Units</td>
+                                <td>₹130 / month</td>
+                                <td>₹11.10 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>301 - 500 Units</td>
+                                <td>₹130 / month</td>
+                                <td>₹15.38 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>Above 500 Units</td>
+                                <td>₹130 / month</td>
+                                <td>₹17.68 / unit</td>
+                            </tr>
+
+                            <!-- Category 2 -->
+                            <tr class="table-section-header">
+                                <td colspan="3"
+                                    style="font-weight: 700; background: var(--bg-dark); padding-top: 1rem;">Commercial
+                                    (LT-II Non-Residential)</td>
+                            </tr>
+                            <tr>
+                                <td>0 - 20 kW</td>
+                                <td>₹520 / month</td>
+                                <td>₹10.37 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>> 20 kW and &le; 50 kW</td>
+                                <td>₹525 / kVA / month</td>
+                                <td>₹14.22 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>Above 50 kW</td>
+                                <td>₹525 / kVA / month</td>
+                                <td>₹16.61 / unit</td>
+                            </tr>
+
+                            <!-- Category 3 -->
+                            <tr class="table-section-header">
+                                <td colspan="3"
+                                    style="font-weight: 700; background: var(--bg-dark); padding-top: 1rem;">Industrial
+                                    (LT-V Industry)</td>
+                            </tr>
+                            <tr>
+                                <td>0 - 20 kW</td>
+                                <td>₹600 / month</td>
+                                <td>₹7.31 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>Above 20 kW</td>
+                                <td>₹400 / kVA / month</td>
+                                <td>₹7.76 / unit</td>
+                            </tr>
+
+                            <!-- Category 4/5 -->
+                            <tr class="table-section-header">
+                                <td colspan="3"
+                                    style="font-weight: 700; background: var(--bg-dark); padding-top: 1rem;">High
+                                    Tension (HT)</td>
+                            </tr>
+                            <tr>
+                                <td>Commercial (HT-II)</td>
+                                <td>₹600 / kVA / month</td>
+                                <td>₹14.77 / unit</td>
+                            </tr>
+                            <tr>
+                                <td>Industrial (HT-I)</td>
+                                <td>₹600 / kVA / month</td>
+                                <td>₹9.42 / unit</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="toast" class="toast">Settings saved successfully!</div>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="common.js"></script>
+    <script type="module" src="tariff.js"></script>
+</body>
+
+</html>

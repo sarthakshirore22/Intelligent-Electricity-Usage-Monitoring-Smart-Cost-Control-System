@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Synexis</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body.login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(240, 244, 248, 0.6), rgba(240, 244, 248, 0.8)), url('new_login_brilliant_smart_energy_1772145048466.png') center/cover no-repeat fixed;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .login-brand {
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #0284c7, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .login-form .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-form .form-label {
+            color: #0f172a;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form .form-control {
+            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            color: #0f172a;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .login-form .form-control:focus {
+            outline: none;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, #0284c7, #10b981);
+            border: none;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
+        }
+    </style>
+</head>
+
+<body class="login-page">
+
+    <div class="login-container">
+        <div class="login-brand">Synexis</div>
+        <p class="login-subtitle">Intelligent Electricity Usage Monitoring & Smart Cost Control System</p>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary login-btn">Sign In ➔</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+
+            if (username) {
+                // Mock login - allow any credentials as long as username is provided
+                sessionStorage.setItem('smart_energy_user', username);
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

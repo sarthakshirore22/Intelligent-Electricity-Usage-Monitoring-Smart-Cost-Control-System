@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Synexis</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Sticky Alert Header -->
+  <div id="sticky-alert" class="sticky-alert-header">
+    <div class="alert-content">
+      <span class="alert-icon">⚠️</span>
+      <span id="sticky-alert-msg" class="alert-text">Alert Message...</span>
+    </div>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand">Synexis</div>
+    <nav>
+      <div class="nav-section-title">Overview</div>
+      <ul class="nav-links mb-4">
+        <li><a href="index.html" class="nav-item active">📊 Dashboard</a></li>
+      </ul>
+
+      <div class="nav-section-title">Analytics</div>
+      <ul class="nav-links mb-4">
+        <li><a href="carbon-details.html" class="nav-item">🍃 Carbon Details</a></li>
+        <li><a href="eco-grade-details.html" class="nav-item">🌍 Eco-Grade Details</a></li>
+        <li><a href="cost-result.html" class="nav-item">💰 Cost Calculator</a></li>
+        <li><a href="graphs.html" class="nav-item">📈 Graphical Analysis</a></li>
+      </ul>
+
+      <div class="nav-section-title">Settings & Security</div>
+      <ul class="nav-links">
+        <li><a href="tariff.html" class="nav-item">⚙️ Tariff Settings</a></li>
+        <li><a href="index.html#alerts" id="nav-energy-alerts" class="nav-item">🚨 Energy Alerts</a></li>
+        <li><a href="index.html#vacation-toggle" class="nav-item">🏖️ Vacation Mode</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-content">
+        <h1 class="project-title">Intelligent Electricity Usage Monitoring & Smart Cost Control System</h1>
+
+        <div class="topbar-actions">
+          <div class="solar-mode-container"
+            style="display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem;">
+            <span style="font-weight: 600; color: var(--text-main);">Solar Mode</span>
+            <label class="switch">
+              <input type="checkbox" id="solar-mode-toggle">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div id="connection-status" class="status-badge">
+            <span class="status-dot"></span>
+            <span class="status-text">Connecting...</span>
+          </div>
+
+          <div class="user-profile" id="user-profile-btn">
+            <div class="profile-icon">👤</div>
+            <span class="profile-name" id="display-username">Guest</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-container">
+
+      <!-- TOP ROW -->
+      <div class="dashboard-row">
+        <!-- Card 7: Actionable Insights -->
+        <div class="card card-insight" style="width: 100%;">
+          <h2 class="card-title">💡 Actionable Insights</h2>
+          <div class="mb-4" style="flex-grow: 1;">
+            <ul id="insights-list" class="insights-list">
+              <li class="insight-loading" style="color: var(--text-muted); font-size: 0.9rem;">Generating intelligent
+                insights...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: ENVIRONMENT -->
+      <div class="dashboard-row">
+        <!-- Card 5: Carbon Footprint -->
+        <div class="card card-carbon">
+          <h2 class="card-title">🍃 Carbon Footprint</h2>
+          <div class="mb-4" style="flex-grow: 1; display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <div class="value-display"><span id="display-co2-today">--</span> <span
+                  style="font-size: 1.5rem;">kg</span></div>
+              <div class="value-label">CO₂ Emissions Today</div>
+            </div>
+            <div>
+              <div class="value-display"><span id="display-co2">--</span> <span style="font-size: 1.5rem;">kg</span>
+              </div>
+              <div class="value-label">CO₂ Emissions This Month</div>
+            </div>
+          </div>
+          <a href="carbon-details.html" class="btn btn-secondary btn-block mt-3">More Details ➔</a>
+        </div>
+
+        <!-- Card 6: Eco-Grade -->
+        <div class="card card-eco"
+          style="display: flex; flex-direction: column; position: relative; align-items: center; justify-content: center;">
+          <h2 class="card-title" style="width: 100%; text-align: left;">🌍 Eco-Grade</h2>
+          <div class="mb-4"
+            style="flex-grow: 1; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div id="grade-circle-container" class="grade-circle grade-circle-c">
+              <div id="display-grade-letter" class="value-display" style="font-size: 4rem; margin: 0;">-</div>
+            </div>
+            <div id="display-grade-status" class="value-label"
+              style="font-size: 1.1rem; font-weight: 600; margin-top: 1rem;">
+              Calculating...
+            </div>
+            <div id="streak-badge" class="streak-broken"
+              style="margin-top: 1rem; font-size: 0.85rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; display: none;">
+            </div>
+          </div>
+          <a href="eco-grade-details.html" class="btn btn-secondary btn-block mt-3" style="width: 100%;">More Details
+            ➔</a>
+        </div>
+      </div>
+
+      <!-- ROW 3: ANALYTICS -->
+      <div class="dashboard-row">
+        <!-- Card 1: Cost Calculation -->
+        <div class="card card-cost">
+          <h2 class="card-title calc-title">⏱️ Cost Calculation</h2>
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input type="datetime-local" step="1" id="start-time" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input type="datetime-local" step="1" id="end-time" class="form-control">
+          </div>
+          <div class="quick-buttons">
+            <button class="quick-btn" data-range="5min">Last 5 Min</button>
+            <button class="quick-btn" data-range="1hour">Last 1 Hour</button>
+            <button class="quick-btn" data-range="24hours">Last 24 Hours</button>
+            <button class="quick-btn" data-range="today">Today</button>
+            <button class="quick-btn" data-range="yesterday">Yesterday</button>
+            <button class="quick-btn" data-range="7days">Last 7 Days</button>
+            <button class="quick-btn" data-range="thisMonth">This Month</button>
+            <button class="quick-btn" data-range="lastMonth">Last Month</button>
+            <button class="quick-btn" data-range="thisYear">This Year</button>
+          </div>
+          <button id="btn-calculate" class="btn btn-primary btn-block"><span class="calc-btn-text">Calculate Cost</span>
+            ➔</button>
+        </div>
+
+        <!-- Card 3: Graphical Analysis Shortcut -->
+        <div class="card card-graph">
+          <h2 class="card-title">📉 Energy Analysis</h2>
+          <p style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;">
+            Visualize real-time and historical power consumption trends across all connected loads.
+          </p>
+          <div style="flex-grow: 1;"></div>
+          <a href="graphs.html" class="btn btn-primary btn-block">View Charts ➔</a>
+        </div>
+      </div>
+
+      <!-- ROW 4: SETTINGS & CONTROLS -->
+      <div class="dashboard-row">
+        <!-- Card 4: Alert Settings (Watchdog Engine) -->
+        <div class="card card-alert">
+          <h2 class="card-title">🚨 Energy Alerts</h2>
+          <div class="mb-4" style="flex-grow: 1;">
+            <div class="value-label">Current Status</div>
+            <div id="latest-alert-display" class="alert-status no-alert" style="margin-bottom: 1rem;">Safe</div>
+            <div id="dashboard-rules-list"></div>
+          </div>
+          <button id="btn-more-settings" class="btn btn-secondary btn-block">More Settings ➔</button>
+        </div>
+
+        <!-- Card 2: Tariff Settings Overview -->
+        <div class="card card-tariff" id="tariff-overview-card">
+          <h2 class="card-title">💵 Current Tariff</h2>
+          <div class="mb-4 cost-metric">
+            <div class="value-display">₹<span id="display-rate">--</span></div>
+            <div class="value-label">per kWh (Unit)</div>
+          </div>
+          <div class="mb-4 cost-metric">
+            <div class="value-display" style="font-size: 1.5rem;">₹<span id="display-fixed">--</span></div>
+            <div class="value-label">Fixed Monthly Charge</div>
+          </div>
+          <a href="tariff.html" class="btn btn-secondary btn-block">Modify Tariff ➔</a>
+        </div>
+
+        <!-- Card 8: Smart Vacation Mode -->
+        <div class="card card-vacation">
+          <h2 class="card-title">🏖️ Smart Vacation Mode</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; font-size: 0.9rem;">
+            Secure your home while away. Automatically monitor for unauthorized power draw.
+          </p>
+          <div
+            style="flex-grow: 1; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+            <span style="font-weight: 600; color: var(--text-main);">Vacation Mode</span>
+            <label class="switch">
+              <input type="checkbox" id="vacation-toggle">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div id="vacation-status-display"
+            style="text-align: center; font-weight: 600; padding: 0.75rem; border-radius: 0.5rem; background: var(--bg-dark); color: var(--text-muted);">
+            System Disarmed
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- More Settings Modal -->
+  <div id="alert-settings-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="card-title" style="margin-bottom:0;">Alert Settings</h2>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="add-rule-form" class="form-group mb-4">
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <div style="flex: 1;">
+              <label class="form-label">Target Node</label>
+              <select id="rule-target" class="form-control">
+                <option value="total">Total System</option>
+                <option value="load1">Iron</option>
+                <option value="load2">Hair Dryer</option>
+                <option value="load3">Bulb</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">Period</label>
+              <select id="rule-period" class="form-control">
+                <option value="today">Daily</option>
+                <option value="month">Monthly</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <div style="flex: 1;">
+              <label class="form-label">Metric</label>
+              <select id="rule-metric" class="form-control">
+                <option value="energy">Energy (kWh)</option>
+                <option value="cost" id="budget-input-group">Cost (₹)</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">Limit Value</label>
+              <input type="number" id="rule-limit" class="form-control" step="0.01" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Save Rule</button>
+        </form>
+        <div class="rule-list-wrapper">
+          <h3 class="form-label"
+            style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Active Rules</h3>
+          <ul id="active-rule-list" class="nav-links mt-4" style="max-height: 200px; overflow-y: auto;">
+            <!-- Dynamically populated -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Whitelist Configuration Modal -->
+  <div id="vacation-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="card-title" style="margin-bottom:0;">Whitelist Appliances</h2>
+        <button id="close-vacation-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Which devices are allowed to run while you are away? Any power draw on non-whitelisted loads will trigger a
+          security breach.
+        </p>
+        <form id="whitelist-form" class="form-group mb-4">
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+              <input type="checkbox" value="load1" class="whitelist-chk" style="width: 1.2rem; height: 1.2rem;">
+              <span style="font-weight: 500;">Iron</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+              <input type="checkbox" value="load2" class="whitelist-chk" style="width: 1.2rem; height: 1.2rem;">
+              <span style="font-weight: 500;">Hair Dryer</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+              <input type="checkbox" value="load3" class="whitelist-chk" style="width: 1.2rem; height: 1.2rem;">
+              <span style="font-weight: 500;">Bulb</span>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" style="background: var(--danger);">Arm System
+            🛡️</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panic Alert Overlay -->
+  <div id="panic-overlay" class="panic-overlay">
+    <div class="panic-content">
+      <div class="panic-icon">🚨</div>
+      <h1 class="panic-title">SECURITY BREACH</h1>
+      <p id="panic-message" class="panic-message">UNAUTHORIZED ACTIVITY DETECTED ON LOAD | Power Draw: -- Watts</p>
+      <button id="btn-disarm" class="btn btn-secondary"
+        style="margin-top: 2rem; border-color: transparent; color: var(--danger); font-weight: 700;">Disarm
+        System</button>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="common.js"></script>
+  <script type="module" src="dashboard.js"></script>
+  <script type="module" src="alerts.js"></script>
+  <script type="module" src="vacation.js"></script>
+</body>
+
+</html>

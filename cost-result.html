@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Results - Synexis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .time-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .time-range {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .info-note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 1.25rem;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .card {
+            position: relative;
+        }
+
+        .units-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Synexis</div>
+        <nav>
+            <div class="nav-section-title">Overview</div>
+            <ul class="nav-links mb-4">
+                <li><a href="index.html" class="nav-item">📊 Dashboard</a></li>
+            </ul>
+
+            <div class="nav-section-title">Analytics</div>
+            <ul class="nav-links mb-4">
+                <li><a href="carbon-details.html" class="nav-item">🍃 Carbon Details</a></li>
+                <li><a href="eco-grade-details.html" class="nav-item">🌍 Eco-Grade Details</a></li>
+                <li><a href="cost-result.html" class="nav-item active">💰 Cost Calculator</a></li>
+                <li><a href="graphs.html" class="nav-item">📈 Graphical Analysis</a></li>
+            </ul>
+
+            <div class="nav-section-title">Settings & Security</div>
+            <ul class="nav-links">
+                <li><a href="tariff.html" class="nav-item">⚙️ Tariff Settings</a></li>
+                <li><a href="index.html#alerts" id="nav-energy-alerts" class="nav-item">🚨 Energy Alerts</a></li>
+                <li><a href="index.html#vacation-toggle" class="nav-item">🏖️ Vacation Mode</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-content" style="justify-content: center; position: relative;">
+                <h1 class="project-title" style="margin: 0 auto;">Cost Calculation</h1>
+
+                <div class="topbar-actions" style="position: absolute; right: 0;">
+                    <div id="connection-status" class="status-badge">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Connecting...</span>
+                    </div>
+
+                    <div class="user-profile" id="user-profile-btn">
+                        <div class="profile-icon">👤</div>
+                        <span class="profile-name" id="display-username">Guest</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">Previously
+                        Calculated Range:</div>
+                    <div class="time-range" id="display-time-range" style="font-size: 1.1rem; color: var(--primary);">
+                        Loading...</div>
+                </div>
+            </div>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Update Start Time</label>
+                    <input type="datetime-local" step="1" id="start-time" class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Update End Time</label>
+                    <input type="datetime-local" step="1" id="end-time" class="form-control">
+                </div>
+            </div>
+
+            <div class="quick-buttons">
+                <button class="quick-btn" data-range="5min">Last 5 Min</button>
+                <button class="quick-btn" data-range="1hour">Last 1 Hour</button>
+                <button class="quick-btn" data-range="24hours">Last 24 Hours</button>
+                <button class="quick-btn" data-range="today">Today</button>
+                <button class="quick-btn" data-range="yesterday">Yesterday</button>
+                <button class="quick-btn" data-range="7days">Last 7 Days</button>
+                <button class="quick-btn" data-range="thisMonth">This Month</button>
+                <button class="quick-btn" data-range="lastMonth">Last Month</button>
+                <button class="quick-btn" data-range="thisYear">This Year</button>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button id="btn-calculate" class="btn btn-primary"><span class="calc-btn-text">Recalculate Cost</span>
+                    ➔</button>
+            </div>
+        </div>
+
+        <!-- Costs -->
+        <div class="cost-grid">
+
+            <!-- Total Cost -->
+            <div class="card" style="border-color: var(--primary);">
+                <div id="loading-total" class="loading-overlay">Calculating...</div>
+                <h2 class="card-title calc-total-title">⚡ Total Cost</h2>
+                <div class="value-display cost-display">₹<span id="cost-total">0.00</span></div>
+                <div class="units-label energy-display"><span id="units-total">0.00</span> kWh</div>
+            </div>
+
+            <!-- Load 1 -->
+            <div class="card">
+                <div id="loading-l1" class="loading-overlay">Calculating...</div>
+                <h2 class="card-title calc-l1-title">🔌 Iron</h2>
+                <div class="value-display cost-display" style="font-size: 2rem;">₹<span id="cost-l1">0.00</span></div>
+                <div class="units-label energy-display"><span id="units-l1">0.00</span> kWh</div>
+            </div>
+
+            <!-- Load 2 -->
+            <div class="card">
+                <div id="loading-l2" class="loading-overlay">Calculating...</div>
+                <h2 class="card-title calc-l2-title">🔌 Hair Dryer</h2>
+                <div class="value-display cost-display" style="font-size: 2rem;">₹<span id="cost-l2">0.00</span></div>
+                <div class="units-label energy-display"><span id="units-l2">0.00</span> kWh</div>
+            </div>
+
+            <!-- Load 3 -->
+            <div class="card">
+                <div id="loading-l3" class="loading-overlay">Calculating...</div>
+                <h2 class="card-title calc-l3-title">🔌 Bulb</h2>
+                <div class="value-display cost-display" style="font-size: 2rem;">₹<span id="cost-l3">0.00</span></div>
+                <div class="units-label energy-display"><span id="units-l3">0.00</span> kWh</div>
+            </div>
+
+        </div>
+
+        <div class="info-note cost-display">
+            <span style="font-size: 1.25rem;">ℹ️</span>
+            This is pure energy cost based on the configured tariff rate. Fixed monthly charges are not included in this
+            calculation.
+        </div>
+
+        <a href="graphs.html" class="btn btn-primary" style="display: inline-flex; width: auto; margin: 0 auto;">View
+            Graphical Analysis ➔</a>
+
+    </main>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="common.js"></script>
+    <script type="module" src="cost.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphical Analysis - Synexis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        .controls-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            accent-color: var(--primary);
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            color: var(--text-main);
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            height: 400px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 1.25rem;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Synexis</div>
+        <nav>
+            <div class="nav-section-title">Overview</div>
+            <ul class="nav-links mb-4">
+                <li><a href="index.html" class="nav-item">📊 Dashboard</a></li>
+            </ul>
+
+            <div class="nav-section-title">Analytics</div>
+            <ul class="nav-links mb-4">
+                <li><a href="carbon-details.html" class="nav-item">🍃 Carbon Details</a></li>
+                <li><a href="eco-grade-details.html" class="nav-item">🌍 Eco-Grade Details</a></li>
+                <li><a href="cost-result.html" class="nav-item">💰 Cost Calculator</a></li>
+                <li><a href="graphs.html" class="nav-item active">📈 Graphical Analysis</a></li>
+            </ul>
+
+            <div class="nav-section-title">Settings & Security</div>
+            <ul class="nav-links">
+                <li><a href="tariff.html" class="nav-item">⚙️ Tariff Settings</a></li>
+                <li><a href="index.html#alerts" id="nav-energy-alerts" class="nav-item">🚨 Energy Alerts</a></li>
+                <li><a href="index.html#vacation-toggle" class="nav-item">🏖️ Vacation Mode</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-content" style="justify-content: center; position: relative;">
+                <h1 class="project-title" style="margin: 0 auto;">Graphical Analysis</h1>
+
+                <div class="topbar-actions" style="position: absolute; right: 0;">
+                    <div id="connection-status" class="status-badge">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Connecting...</span>
+                    </div>
+
+                    <div class="user-profile" id="user-profile-btn">
+                        <div class="profile-icon">👤</div>
+                        <span class="profile-name" id="display-username">Guest</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="card" style="margin-bottom: 2rem; width: 100%; max-width: 100%; min-width: 0; overflow-x: hidden;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selected Range:
+                    </div>
+                    <div class="time-range" id="display-time-range" style="font-size: 1.1rem; color: var(--primary);">
+                        Loading...</div>
+                </div>
+            </div>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Update Start Time</label>
+                    <input type="datetime-local" step="1" id="start-time" class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Update End Time</label>
+                    <input type="datetime-local" step="1" id="end-time" class="form-control">
+                </div>
+            </div>
+
+            <div class="quick-buttons">
+                <button class="quick-btn" data-range="5min">Last 5 Min</button>
+                <button class="quick-btn" data-range="1hour">Last 1 Hour</button>
+                <button class="quick-btn" data-range="24hours">Last 24 Hours</button>
+                <button class="quick-btn" data-range="today">Today</button>
+                <button class="quick-btn" data-range="yesterday">Yesterday</button>
+                <button class="quick-btn" data-range="7days">Last 7 Days</button>
+                <button class="quick-btn" data-range="thisMonth">This Month</button>
+                <button class="quick-btn" data-range="lastMonth">Last Month</button>
+                <button class="quick-btn" data-range="thisYear">This Year</button>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button id="btn-update-graphs" class="btn btn-primary">Update Graphs ➔</button>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" id="chk-l1" checked> <span>Iron</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="chk-l2" checked> <span>Hair Dryer</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="chk-l3" checked> <span>Bulb</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="chk-total" checked> <span>Total</span>
+                </label>
+            </div>
+
+            <div class="legend-key">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ef4444;"></div> Iron
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f59e0b;"></div> Hair Dryer
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #10b981;"></div> Bulb
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3b82f6;"></div> Total
+                </div>
+            </div>
+        </div>
+
+        <!-- Energy Chart -->
+        <div class="chart-container">
+            <div id="loading-energy" class="loading-overlay">Loading Data...</div>
+            <h2 class="chart-title">⚡ Energy Consumption (kWh) over Time</h2>
+            <div class="chart-scroll-wrapper">
+                <div id="energy-chart-inner" style="position: relative; height: 350px;">
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Chart -->
+        <div class="chart-container">
+            <div id="loading-cost" class="loading-overlay">Loading Data...</div>
+            <h2 class="chart-title">💰 Cost (₹) over Time</h2>
+            <div class="chart-scroll-wrapper">
+                <div id="cost-chart-inner" style="position: relative; height: 350px;">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="common.js"></script>
+    <script type="module" src="graphs.js"></script>
+</body>
+
+</html>

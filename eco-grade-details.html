@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Grade Details - Synexis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Shared JS Requirements -->
+    <script type="module" src="common.js" defer></script>
+
+    <style>
+        .grade-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .grade-table th,
+        .grade-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .grade-table th {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .grade-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .grade-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Synexis</div>
+        <nav>
+            <div class="nav-section-title">Overview</div>
+            <ul class="nav-links mb-4">
+                <li><a href="index.html" class="nav-item">📊 Dashboard</a></li>
+            </ul>
+
+            <div class="nav-section-title">Analytics</div>
+            <ul class="nav-links mb-4">
+                <li><a href="carbon-details.html" class="nav-item">🍃 Carbon Details</a></li>
+                <li><a href="eco-grade-details.html" class="nav-item active">🌍 Eco-Grade Details</a></li>
+                <li><a href="cost-result.html" class="nav-item">💰 Cost Calculator</a></li>
+                <li><a href="graphs.html" class="nav-item">📈 Graphical Analysis</a></li>
+            </ul>
+
+            <div class="nav-section-title">Settings & Security</div>
+            <ul class="nav-links">
+                <li><a href="tariff.html" class="nav-item">⚙️ Tariff Settings</a></li>
+                <li><a href="index.html#alerts" id="nav-energy-alerts" class="nav-item">🚨 Energy Alerts</a></li>
+                <li><a href="index.html#vacation-toggle" class="nav-item">🏖️ Vacation Mode</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar" style="justify-content: center; position: relative;">
+            <h1 class="project-title" style="margin: 0 auto;">Eco-Grade Matrix</h1>
+            <div class="user-profile" style="position: absolute; right: 2rem;">
+                <span id="display-username">Home ID: ---</span>
+                <div class="avatar">U</div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <!-- Row 1: The Table -->
+            <div class="dashboard-row">
+                <div class="card card-eco" style="flex: 2;">
+                    <h2 class="card-title">🏆 Rating System Overview</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;">Your Eco-Grade is
+                        calculated dynamically based on your accumulating carbon footprint for the current billing
+                        cycle. Achieving a higher grade directly reflects a significant reduction in energy waste and a
+                        minimized environmental impact.</p>
+
+                    <!-- User's Live Grades -->
+                    <div
+                        style="display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap;">
+
+                        <div
+                            style="background: var(--bg-main); padding: 1.5rem 2rem; border-radius: 0.75rem; border: 1px solid var(--border); text-align: center; min-width: 150px;">
+                            <div
+                                style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                Daily Grade</div>
+                            <div id="detail-daily-grade" class="grade-badge"
+                                style="font-size: 1.5rem; padding: 0.5rem 1rem; background: var(--bg-card-hover); color: var(--text-main);">
+                                --</div>
+                        </div>
+
+                        <div
+                            style="background: var(--bg-main); padding: 1.5rem 2rem; border-radius: 0.75rem; border: 1px solid var(--border); text-align: center; min-width: 150px;">
+                            <div
+                                style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                Monthly Grade</div>
+                            <div id="detail-monthly-grade" class="grade-badge"
+                                style="font-size: 1.5rem; padding: 0.5rem 1rem; background: var(--bg-card-hover); color: var(--text-main);">
+                                --</div>
+                        </div>
+
+                        <div
+                            style="background: var(--bg-main); padding: 1.5rem 2rem; border-radius: 0.75rem; border: 1px solid var(--border); text-align: center; min-width: 150px;">
+                            <div
+                                style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                Current Streak</div>
+                            <div id="detail-streak-badge" class="streak-broken"
+                                style="font-size: 1rem; font-weight: 600; padding: 0.75rem 1.25rem; border-radius: 999px; display: inline-block;">
+                                Loading...</div>
+                        </div>
+
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="grade-table">
+                            <thead>
+                                <tr>
+                                    <th>Eco-Grade</th>
+                                    <th>Monthly CO₂ Limit</th>
+                                    <th>Daily CO₂ Limit</th>
+                                    <th>Energy Equivalent</th>
+                                    <th>Status & Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="grade-badge grade-a-plus"
+                                            style="background: rgba(34,197,94,0.15); color: #22c55e;">A+</span></td>
+                                    <td>0 to 71 kg</td>
+                                    <td>&le; 2.3 kg / day</td>
+                                    <td>&lt; 100 Units/month</td>
+                                    <td><strong>Eco-Champion:</strong> Highly optimized, minimal waste.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grade-badge grade-a"
+                                            style="background: rgba(59,130,246,0.15); color: #3b82f6;">A</span></td>
+                                    <td>72 to 142 kg</td>
+                                    <td>&le; 4.7 kg / day</td>
+                                    <td>101 - 200 Units/month</td>
+                                    <td><strong>Safe:</strong> Standard efficient household usage.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grade-badge grade-b"
+                                            style="background: rgba(234,179,8,0.15); color: #eab308;">B</span></td>
+                                    <td>143 to 213 kg</td>
+                                    <td>&le; 7.1 kg / day</td>
+                                    <td>201 - 300 Units/month</td>
+                                    <td><strong>Average:</strong> Typical usage with regular appliances.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grade-badge grade-c"
+                                            style="background: rgba(249,115,22,0.15); color: #f97316;">C</span></td>
+                                    <td>214 to 355 kg</td>
+                                    <td>&le; 11.8 kg / day</td>
+                                    <td>301 - 500 Units/month</td>
+                                    <td><strong>Warning:</strong> High emission. Optimize heavy appliances.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grade-badge grade-d"
+                                            style="background: rgba(239,68,68,0.15); color: #ef4444;">D</span></td>
+                                    <td>&gt; 355 kg</td>
+                                    <td>&gt; 11.8 kg / day</td>
+                                    <td>&gt; 500 Units/month</td>
+                                    <td><strong>Critical:</strong> Extreme power consumption.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Gamification Lore -->
+            <div class="dashboard-row">
+                <div class="card card-insight" style="flex: 2;">
+                    <h2 class="card-title">🔥 Daily Eco-Streaks</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.6;">Maintain a strict
+                        daily emission value that meets the <strong>A+ standard</strong> (&#x2264; 2.36 kg or approx.
+                        3.3 units of grid electricity) to ignite your daily Eco-Streak! Each consecutive day you keep
+                        your environmental impact low extends your multiplier.</p>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Streaks are evaluated daily exactly at
+                        midnight based on your total power consumption spanning the previous 24-hours.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedString = localStorage.getItem('watchdogMemory_latest');
+            const streakCount = parseInt(localStorage.getItem('eco_streak_count')) || 0;
+
+            // Render Streak
+            const streakBadge = document.getElementById('detail-streak-badge');
+            if (streakCount > 0) {
+                streakBadge.className = 'streak-active';
+                streakBadge.innerHTML = streakCount >= 7 ? `🏆 ${streakCount}-Day A+ Streak!` : `🔥 ${streakCount}-Day A+ Streak!`;
+            } else {
+                streakBadge.className = 'streak-broken';
+                streakBadge.innerHTML = `🎯 0 Days`;
+            }
+
+            // Render Grades
+            if (storedString) {
+                try {
+                    const memory = JSON.parse(storedString);
+
+                    const elDaily = document.getElementById('detail-daily-grade');
+                    const elMonthly = document.getElementById('detail-monthly-grade');
+
+                    if (memory.gradeToday) {
+                        elDaily.textContent = memory.gradeToday.grade;
+                        elDaily.className = `grade-badge ${memory.gradeToday.colorClass}`;
+
+                        // Map internal grade classes to specifically readable colors if needed roughly
+                        if (memory.gradeToday.colorClass === 'grade-a-plus') { elDaily.style.background = 'rgba(34,197,94,0.15)'; elDaily.style.color = '#22c55e'; }
+                        if (memory.gradeToday.colorClass === 'grade-a') { elDaily.style.background = 'rgba(59,130,246,0.15)'; elDaily.style.color = '#3b82f6'; }
+                        if (memory.gradeToday.colorClass === 'grade-b') { elDaily.style.background = 'rgba(234,179,8,0.15)'; elDaily.style.color = '#eab308'; }
+                        if (memory.gradeToday.colorClass === 'grade-c') { elDaily.style.background = 'rgba(249,115,22,0.15)'; elDaily.style.color = '#f97316'; }
+                        if (memory.gradeToday.colorClass === 'grade-d') { elDaily.style.background = 'rgba(239,68,68,0.15)'; elDaily.style.color = '#ef4444'; }
+                    }
+
+                    if (memory.gradeMonth) {
+                        elMonthly.textContent = memory.gradeMonth.grade;
+                        elMonthly.className = `grade-badge ${memory.gradeMonth.colorClass}`;
+
+                        if (memory.gradeMonth.colorClass === 'grade-a-plus') { elMonthly.style.background = 'rgba(34,197,94,0.15)'; elMonthly.style.color = '#22c55e'; }
+                        if (memory.gradeMonth.colorClass === 'grade-a') { elMonthly.style.background = 'rgba(59,130,246,0.15)'; elMonthly.style.color = '#3b82f6'; }
+                        if (memory.gradeMonth.colorClass === 'grade-b') { elMonthly.style.background = 'rgba(234,179,8,0.15)'; elMonthly.style.color = '#eab308'; }
+                        if (memory.gradeMonth.colorClass === 'grade-c') { elMonthly.style.background = 'rgba(249,115,22,0.15)'; elMonthly.style.color = '#f97316'; }
+                        if (memory.gradeMonth.colorClass === 'grade-d') { elMonthly.style.background = 'rgba(239,68,68,0.15)'; elMonthly.style.color = '#ef4444'; }
+                    }
+                } catch (e) {
+                    console.error("Failed to parse watchdogMemory:", e);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
